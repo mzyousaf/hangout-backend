@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { addUser, getUserById, checkUser } = require("../controllers/UserController")
+const { addUser, getUserById, checkUser, addRiskToUser } = require("../controllers/UserController")
 
 // return res.status(response.status).json(response);
 router.post("/signup/", async (req, res) => {
 
-	const { firstName, lastName, email, password } = req.body;
-	const { result, error } = await addUser(firstName, lastName, email, password);
+	const { name, username, email, password } = req.body;
+	const { result, error } = await addUser(name, username, email, password);
 
 	if (error) {
 		// return error
@@ -40,6 +40,23 @@ router.post("/signin/", async (req, res) => {
 		res.status(500);
 	}
 });
+
+router.post("/addrisk/", async (req, res) => {
+
+	const { userId, checks } = req.body;
+	const { result, error } = await addRiskToUser(userId, checks);
+
+	if (error) {
+		// return error
+		res.status(error.status).json({ message: error.message, error: error.error })
+	} else if (result) {
+		res.status(result.status).json({ message: result.message })
+
+	} else {
+		res.status(500);
+	}
+});
+
 
 router.get("/", async (req, res) => {
 	const userId = req.body.id;

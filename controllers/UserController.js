@@ -6,7 +6,7 @@ const { resolve } = require('path');
 const { rejects } = require('assert');
 
 
-exports.addUser = async (firstName, lastName, email, password) => {
+exports.addUser = async (name, username, email, password) => {
 	try {
 
 		let user = await User.findOne({ email })
@@ -14,14 +14,26 @@ exports.addUser = async (firstName, lastName, email, password) => {
 			return ({
 				error: {
 					status: 400,
-					message: "User Already Exist",
-					error: "User Already Exist"
+					message: "Email Already Exist",
+					error: "Email Already Exist"
 				}
 			})
 		}
+
+		user = await User.findOne({ username })
+		if (user) {
+			return ({
+				error: {
+					status: 400,
+					message: "Username Already Exist",
+					error: "Username Already Exist"
+				}
+			})
+		}
+
 		user = new User({
-			firstName,
-			lastName,
+			name,
+			username,
 			email,
 			password
 		})
@@ -51,7 +63,13 @@ exports.addUser = async (firstName, lastName, email, password) => {
 exports.checkUser = async (email, password) => {
 
 	try {
-		let user = await User.findOne({ email })
+		let user = null
+		if (email.includes(".com")) {
+			user = await User.findOne({ email: email })
+		}
+		else {
+			user = await User.findOne({ username: email })
+		}
 		if (!user) {
 			return ({
 				error: {
@@ -134,3 +152,37 @@ exports.getUserById = async (userId) => {
 	}
 
 }
+
+exports.addRiskToUser = async (userId, checks) => {
+	try {
+		console.log
+		await User.updateOne(
+			{ _id: mongoose.Types.ObjectId(userId) },
+			{
+				check_1: checks.check1,
+				check_2: checks.check2,
+				check_3: checks.check3,
+				check_4: checks.check4,
+			}
+		)
+
+		return ({
+			result: {
+				status: 200,
+				message: "Checks Created",
+			}
+		})
+
+	} catch (error) {
+		return ({
+			error: {
+				status: 400,
+				message: "Error : Site Data Creation Failed",
+				error: error
+			}
+		});
+	}
+};
+
+
+

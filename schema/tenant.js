@@ -1,14 +1,16 @@
 // import { json } from 'express'
 const mongoose = require('mongoose')
+const { boolean } = require('yargs')
 
 const userSchema = new mongoose.Schema({
-	firstName: {
+	name: {
 		type: String,
 		required: true
 	},
-	lastName: {
+	username: {
 		type: String,
-		required: true
+		required: true,
+		unique: true
 	},
 	email: {
 		type: String,
@@ -24,7 +26,19 @@ const userSchema = new mongoose.Schema({
 	],
 	groupsOwned: [
 		{ type: mongoose.Schema.Types.ObjectId, ref: 'group' }
-	]
+	],
+	check_1: {
+		type: Boolean,
+	},
+	check_2: {
+		type: Boolean,
+	},
+	check_3: {
+		type: Boolean,
+	},
+	check_4: {
+		type: Boolean,
+	}
 })
 
 const groupSchema = new mongoose.Schema(
