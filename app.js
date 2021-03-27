@@ -3,8 +3,11 @@ const dotenv = require("dotenv")
 
 dotenv.config()
 const app = express();
+
 const PORT = process.env.VB_PORT || 3090;
+
 const userRoute = require("./routes/UserRoutes")
+const groupRoute = require("./routes/GroupRoutes")
 const bodyParser = require("body-parser");
 
 const { connectDB } = require("./db/DatabaseConfig");
@@ -15,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 
 //routes
 app.use("/user", userRoute);
+app.use("/group", groupRoute);
 
 //database connection
 connectDB();
