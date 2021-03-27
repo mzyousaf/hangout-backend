@@ -33,7 +33,7 @@ router.post("/signin/", async (req, res) => {
 			expiresIn: 3600
 		}, (err, token) => {
 			if (err) throw err
-			res.status(result.status).json({ message: result.message, data: token })
+			res.status(result.status).json({ message: result.message, data: { token: token, userId: result.data.user.id } })
 		})
 
 	} else {
@@ -59,7 +59,7 @@ router.post("/addrisk/", async (req, res) => {
 
 
 router.get("/", async (req, res) => {
-	const userId = req.body.id;
+	const userId = req.headers.userid;
 
 	const { result, error } = await getUserById(userId);
 	if (error) {
