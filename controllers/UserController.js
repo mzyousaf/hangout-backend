@@ -6,7 +6,7 @@ const { resolve } = require('path');
 const { rejects } = require('assert');
 
 
-exports.addUser = async (name, username, email, password) => {
+exports.addUser = async (name, username, email, password, rank) => {
 	try {
 
 		let user = await User.findOne({ email })
@@ -35,7 +35,8 @@ exports.addUser = async (name, username, email, password) => {
 			name,
 			username,
 			email,
-			password
+			password,
+			rank
 		})
 		const salt = await bcrypt.genSalt(10)
 		user.password = await bcrypt.hash(password, salt)
