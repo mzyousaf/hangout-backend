@@ -38,6 +38,9 @@ const userSchema = new mongoose.Schema({
 	},
 	check_4: {
 		type: Boolean,
+	},
+	rank: {
+		type: String
 	}
 })
 

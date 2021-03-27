@@ -6,8 +6,8 @@ const { addUser, getUserById, checkUser, addRiskToUser } = require("../controlle
 // return res.status(response.status).json(response);
 router.post("/signup/", async (req, res) => {
 
-	const { name, username, email, password } = req.body;
-	const { result, error } = await addUser(name, username, email, password);
+	const { name, username, email, password, rank } = req.body;
+	const { result, error } = await addUser(name, username, email, password, rank);
 
 	if (error) {
 		// return error
