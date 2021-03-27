@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 
 
-exports.addGroup = async (checks, userId) => {
+exports.addGroup = async (rank, checks, userId) => {
     try {
 
         let user = await User.findById(userId)
@@ -14,7 +14,8 @@ exports.addGroup = async (checks, userId) => {
             check_1: checks.check1,
             check_2: checks.check2,
             check_3: checks.check3,
-            check_4: checks.check4
+            check_4: checks.check4,
+            groupRank: rank
         })
 
         // await group.users.push(user)
@@ -36,21 +37,18 @@ exports.addGroup = async (checks, userId) => {
         return ({
             error: {
                 status: 400,
-                message: "Error : Site Data Creation Failed",
+                message: "Error",
                 error: error
             }
         });
     }
 };
 
-exports.getAllGroupByChecks = async (checks) => {
+exports.getAllGroupByChecks = async (rank) => {
     try {
 
         let groups = await Group.find({
-            check_1: checks.check1,
-            check_2: checks.check2,
-            check_3: checks.check3,
-            check_4: checks.check4
+            groupRank: rank
         })
 
         return ({
@@ -65,7 +63,7 @@ exports.getAllGroupByChecks = async (checks) => {
         return ({
             error: {
                 status: 400,
-                message: "Error : Site Data Creation Failed",
+                message: "Error",
                 error: error
             }
         });
@@ -96,7 +94,7 @@ exports.joinGroup = async (userId, groupId) => {
         return ({
             error: {
                 status: 400,
-                message: "Error : Site Data Creation Failed",
+                message: "Error",
                 error: error
             }
         });
@@ -127,9 +125,35 @@ exports.leaveGroup = async (userId, groupId) => {
         return ({
             error: {
                 status: 400,
-                message: "Error : Site Data Creation Failed",
+                message: "Error",
                 error: error
             }
         });
     }
 };
+
+exports.getGroupsByID = async (userId) => {
+    try {
+        console.log(userId)
+        // console.log(await User.findById(userId))
+        const data = await User.findById(userId).populate("groupsOwned");
+
+        return ({
+            result: {
+                status: 200,
+                message: "Groups Owned",
+                data: data
+            }
+        })
+
+    } catch (error) {
+        return ({
+            error: {
+                status: 400,
+                message: "Error",
+                error: error
+            }
+        });
+    }
+};
+

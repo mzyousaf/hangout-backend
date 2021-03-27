@@ -50,6 +50,10 @@ const groupSchema = new mongoose.Schema(
 			type: String,
 			required: true
 		},
+		groupRank: {
+			type: String,
+			required: true
+		},
 		check_1: {
 			type: Boolean
 		},
