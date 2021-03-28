@@ -1,12 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const { addGroup, getAllGroupByChecks, getGroupsByID, joinGroup, leaveGroup } = require("../controllers/GroupController")
+const { addGroup, removeGroup, getAllGroupByChecks, getOwnedGroupsByID, joinGroup, leaveGroup, getUsersByGroup } = require("../controllers/GroupController")
 
 // return res.status(response.status).json(response);
 router.post("/", async (req, res) => {
 
-    const { rank, checks, userId } = req.body;
-    const { result, error } = await addGroup(rank, checks, userId);
+    const { rank, groupName, userId } = req.body;
+    const { result, error } = await addGroup(rank, groupName, userId);
+
+    if (error) {
+        // return error
+        res.status(error.status).json({ message: error.message, error: error.error })
+    } else if (result) {
+        res.status(result.status).json({ message: result.message })
+
+    } else {
+        res.status(500);
+    }
+});
+
+router.post("/remove", async (req, res) => {
+
+    const { userId, groupId } = req.body;
+    const { result, error } = await removeGroup(userId, groupId);
 
     if (error) {
         // return error
@@ -38,7 +54,7 @@ router.post("/getGroups", async (req, res) => {
 router.get("/:id", async (req, res) => {
 
     const userId = req.params.id;
-    const { result, error } = await getGroupsByID(userId);
+    const { result, error } = await getOwnedGroupsByID(userId);
 
     if (error) {
         // return error
@@ -82,6 +98,24 @@ router.post("/leave/", async (req, res) => {
         res.status(500);
     }
 });
+
+router.get("/users/:id", async (req, res) => {
+
+    const groupId = req.params.id;
+    console.log(groupId)
+    const { result, error } = await getUsersByGroup(groupId);
+
+    if (error) {
+        // return error
+        res.status(error.status).json({ message: error.message, error: error.error })
+    } else if (result) {
+        res.status(result.status).json({ message: result.message, data: result.data })
+
+    } else {
+        res.status(500);
+    }
+});
+
 
 
 

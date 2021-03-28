@@ -46,25 +46,22 @@ const userSchema = new mongoose.Schema({
 
 const groupSchema = new mongoose.Schema(
 	{
+		groupName: {
+			type: String,
+			required: true
+		},
+
 		ownerId: {
+			type: String,
+			required: true
+		},
+		ownerEmail: {
 			type: String,
 			required: true
 		},
 		groupRank: {
 			type: String,
 			required: true
-		},
-		check_1: {
-			type: Boolean
-		},
-		check_2: {
-			type: Boolean
-		},
-		check_3: {
-			type: Boolean
-		},
-		check_4: {
-			type: Boolean
 		},
 		users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }]
 	}
