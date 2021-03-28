@@ -4,17 +4,15 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 
 
-exports.addGroup = async (rank, checks, userId) => {
+exports.addGroup = async (rank, name, userId) => {
     try {
 
         let user = await User.findById(userId)
 
         const group = new Group({
+            groupName: name,
             ownerId: userId,
-            check_1: checks.check1,
-            check_2: checks.check2,
-            check_3: checks.check3,
-            check_4: checks.check4,
+            ownerEmail: user.email,
             groupRank: rank
         })
 
@@ -30,6 +28,46 @@ exports.addGroup = async (rank, checks, userId) => {
             result: {
                 status: 200,
                 message: "Group Created",
+            }
+        })
+
+    } catch (error) {
+        return ({
+            error: {
+                status: 400,
+                message: "Error",
+                error: error
+            }
+        });
+    }
+};
+
+exports.removeGroup = async (userId, groupId) => {
+    try {
+
+        const isOwner = await Group.findOne(
+            { _id: mongoose.Types.ObjectId(groupId), ownerId: mongoose.Types.ObjectId(userId) }
+        )
+
+        if (!isOwner) {
+            return ({
+                result: {
+                    status: 200,
+                    message: "Group Not Found",
+                }
+            })
+        }
+        await User.updateOne(
+            { _id: mongoose.Types.ObjectId(userId) },
+            { $pull: { groupsOwned: mongoose.Types.ObjectId(groupId) } }
+        )
+
+        await Group.findByIdAndRemove(groupId)
+
+        return ({
+            result: {
+                status: 200,
+                message: "Group Delted",
             }
         })
 
@@ -132,11 +170,36 @@ exports.leaveGroup = async (userId, groupId) => {
     }
 };
 
-exports.getGroupsByID = async (userId) => {
+exports.getOwnedGroupsByID = async (userId) => {
     try {
         console.log(userId)
         // console.log(await User.findById(userId))
         const data = await User.findById(userId).populate("groupsOwned");
+
+        return ({
+            result: {
+                status: 200,
+                message: "Groups Owned",
+                data: data
+            }
+        })
+
+    } catch (error) {
+        return ({
+            error: {
+                status: 400,
+                message: "Error",
+                error: error
+            }
+        });
+    }
+};
+
+exports.getUsersByGroup = async (groupId) => {
+    try {
+        // console.log(userId)
+        // console.log(await User.findById(userId))
+        const data = await User.find({ joindGroups: { "$in": [groupId] } })
 
         return ({
             result: {
