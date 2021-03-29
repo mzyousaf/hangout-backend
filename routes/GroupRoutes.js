@@ -37,8 +37,8 @@ router.post("/remove", async (req, res) => {
 
 router.post("/getGroups", async (req, res) => {
 
-    const { rank } = req.body;
-    const { result, error } = await getAllGroupByChecks(rank);
+    // const { rank } = req.body;
+    const { result, error } = await getAllGroupByChecks();
 
     if (error) {
         // return error

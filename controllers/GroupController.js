@@ -85,9 +85,7 @@ exports.removeGroup = async (userId, groupId) => {
 exports.getAllGroupByChecks = async (rank) => {
     try {
 
-        let groups = await Group.find({
-            groupRank: rank
-        })
+        let groups = await Group.find({})
 
         return ({
             result: {
